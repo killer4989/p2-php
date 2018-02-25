@@ -141,7 +141,7 @@ class ThreadRead extends Thread {
 
         $url= http_build_url(array(
             "scheme" => $_conf['2chapi_ssl.read']?"https":"http",
-            "host" => P2HostMgr::isHost5ch($this->host)?"api.5ch.net":"api.2ch.net",
+            "host" => "api.5ch.net",
             "path" => "v1/".$serverName[0] . '/' . $this->bbs . '/' . $this->key));
 
         $message = '/v1/' . $serverName[0] . '/' . $this->bbs . '/' . $this->key . $SID2ch . $AppKey;
@@ -225,6 +225,10 @@ class ThreadRead extends Thread {
                     $this->onbytes = strlen ($body);
                 } elseif ($zero_read) {
                     $this->onbytes = intval ($response->getHeader ('Content-Length'));
+                    if(!$this->onbytes) {
+                        // APIのレスポンスヘッダーにContent-Lengthが付かない事があるのでbodyのサイズで代用
+                        $this->onbytes = strlen ($body);
+                    }
                 } else {
                     if (preg_match ('@^bytes ([^/]+)/([0-9]+)@i', $response->getHeader ('Content-Range'), $matches)) {
                         $this->onbytes = intval ($matches[2]);
