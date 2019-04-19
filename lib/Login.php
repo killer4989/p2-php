@@ -88,8 +88,13 @@ class Login
             $login_user = $_SESSION['login_user'];
 
         // äOïîîFèÿÇ≈éwíË
-        } elseif ($_conf['external_authentication'] && isset($_SERVER['REMOTE_USER']) && (preg_match("/^[0-9A-Za-z_{$add_mail}]+\$/", $_SERVER['REMOTE_USER']))) {
-            $login_user = $_SERVER['REMOTE_USER'];
+        } elseif ($_conf['external_authentication']) {
+            if(isset($_SERVER['REMOTE_USER']) && (preg_match("/^[0-9A-Za-z_{$add_mail}]+\$/", $_SERVER['REMOTE_USER']))){
+                $login_user = $_SERVER['REMOTE_USER'];
+            }
+            if(isset($_SERVER['PHP_AUTH_USER']) && (preg_match("/^[0-9A-Za-z_{$add_mail}]+\$/", $_SERVER['PHP_AUTH_USER']))){
+                $login_user = $_SERVER['PHP_AUTH_USER'];
+            }
         }
 
         return $login_user;
